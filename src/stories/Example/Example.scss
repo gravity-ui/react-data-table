@@ -1,0 +1,49 @@
+html,
+body,
+#root {
+    margin: 0;
+}
+
+.dt100-example {
+    $_: &;
+
+    font-family: HelvericaNeue, Arial, sans-serif;
+    font-size: 13px;
+
+    &_fixed {
+        height: 100%;
+    }
+
+    &__settings {
+        flex: 0 0 300px;
+        padding: 20px;
+        position: sticky;
+        top: 0;
+    }
+
+    &__setting {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    &__controls {
+        flex: 0 0 300px;
+        padding: 20px;
+        position: relative;
+    }
+
+    &__table {
+        flex: 1 1 auto;
+        padding: 20px;
+        box-sizing: border-box;
+
+        #{$_}_fixed & {
+            height: 100%;
+        }
+    }
+}
+
+.data-table {
+    height: 100%;
+    box-sizing: border-box;
+}

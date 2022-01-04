@@ -1,0 +1,273 @@
+:root {
+    --data-table-header-vertical-padding: 5px;
+    --data-table-cell-vertical-padding: 5px;
+    --data-table-cell-horizontal-padding: 10px;
+    --data-table-cell-border-padding: var(--data-table-cell-horizontal-padding);
+    --data-table-cell-align: top;
+    --data-table-head-align: top;
+    --data-table-row-height: 30px;
+    --data-table-sort-icon-space: 18px;
+    --data-table-sort-icon-opacity-inactive: 0.15;
+    --data-table-sort-icon-color: inherit;
+}
+
+$cell-border: 1px solid var(--data-table-border-color);
+
+.data-table {
+    $block: &;
+
+    position: relative;
+    box-sizing: border-box;
+
+    &__box {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+
+        &_sticky-head_moving {
+            overflow: visible;
+            position: relative;
+            z-index: 0;
+
+            #{$block}__th {
+                padding-top: 0;
+                padding-bottom: 0;
+                border-top: 0;
+                border-bottom: 0;
+            }
+
+            #{$block}__head-cell {
+                display: block;
+                height: 0;
+                overflow: hidden;
+            }
+
+            #{$block}__row_header-data {
+                visibility: hidden;
+            }
+        }
+        &_sticky-footer_fixed,
+        &_sticky-head_fixed {
+            overflow: auto;
+        }
+    }
+
+    &__table {
+        border-collapse: collapse;
+        table-layout: fixed;
+
+        &_sticky {
+            width: 100%;
+            background: var(--data-table-color-base);
+        }
+    }
+
+    &__row {
+        height: var(--data-table-row-height);
+    }
+
+    &__th {
+        font-weight: 500;
+        cursor: default;
+        padding: var(--data-table-header-vertical-padding) var(--data-table-cell-horizontal-padding);
+        border: $cell-border;
+        position: relative;
+        text-align: left;
+        vertical-align: var(--data-table-head-align);
+
+        &_sortable {
+            cursor: pointer;
+
+            #{$block}__head-cell {
+                padding-right: var(--data-table-sort-icon-space);
+            }
+
+            &#{$block}__th_align_right {
+                #{$block}__head-cell {
+                    padding-right: 0;
+                    padding-left: var(--data-table-sort-icon-space);
+                }
+
+                #{$block}__sort-icon {
+                    left: 0;
+                    right: auto;
+                    transform: translate(0, -50%) scaleX(-1);
+                }
+            }
+        }
+    }
+
+    &__td {
+        padding: var(--data-table-cell-vertical-padding) var(--data-table-cell-horizontal-padding);
+        border: $cell-border;
+        vertical-align: var(--data-table-cell-align);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__td,
+    &__th {
+        &_index {
+            text-align: right;
+        }
+
+        &_align {
+            &_left {
+                text-align: left;
+            }
+            &_center {
+                text-align: center;
+            }
+            &_right {
+                text-align: right;
+            }
+        }
+
+        &:first-child {
+            padding-left: var(--data-table-cell-border-padding);
+        }
+        &:last-child {
+            padding-right: var(--data-table-cell-border-padding);
+        }
+    }
+
+    &__index {
+        text-align: right;
+    }
+
+    &__head-cell {
+        display: inline-block;
+        position: relative;
+        vertical-align: top;
+        white-space: nowrap;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__error {
+        padding: 20px;
+        white-space: pre-wrap;
+    }
+
+    &__sort-icon {
+        display: inline-flex;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translate(0, -50%);
+        color: var(--data-table-sort-icon-color);
+
+        &:after {
+            content: attr(data-index);
+            position: absolute;
+            font-size: 8px;
+            top: -5px;
+            left: 100%;
+        }
+
+        &_shadow {
+            opacity: var(--data-table-sort-icon-opacity-inactive);
+            &:after {
+                content: none;
+            }
+        }
+    }
+
+    &__icon {
+        vertical-align: top;
+    }
+
+    &__no-data {
+        background: var(--data-table-color-stripe);
+    }
+
+    &__sticky {
+        $sticky: &;
+        &_fixed {
+            position: absolute;
+            z-index: 1;
+            left: 0;
+            right: 0;
+            overflow: hidden;
+
+            &#{$sticky}_head {
+                top: 0;
+            }
+
+            &#{$sticky}_footer {
+                bottom: 0;
+            }
+        }
+        &_moving {
+            position: sticky;
+            z-index: 1;
+            margin-bottom: -1px;
+        }
+    }
+
+    &_striped-rows {
+        #{$block}__row {
+            &_odd {
+                background: var(--data-table-color-stripe);
+            }
+        }
+    }
+
+    &_highlight-rows {
+        #{$block}__row {
+            &:hover {
+                background: var(--data-table-color-hover-area);
+            }
+        }
+    }
+
+    &_header_multiline {
+        #{$block}__head-cell {
+            white-space: normal;
+        }
+    }
+    &_header_pre {
+        #{$block}__head-cell {
+            white-space: pre;
+        }
+    }
+
+    &__foot {
+        background: var(--data-table-color-footer-area);
+
+        &_has-sticky-footer_moving {
+            visibility: hidden;
+        }
+    }
+
+    &_theme_common {
+        --data-table-color-base: var(
+            --yc-color-base-background,
+            var(--yc-color-base, var(--color-base))
+        );
+        --data-table-color-stripe: var(
+            --yc-color-base-generic-ultralight,
+            var(--yc-color-base-area, var(--color-base-area))
+        );
+        --data-table-border-color: var(
+            --yc-color-base-generic-hover,
+            var(--yc-color-contrast-15-solid, var(--color-contrast-15-solid))
+        );
+        --data-table-color-hover-area: var(
+            --yc-color-base-simple-hover,
+            var(--yc-color-hover-area, var(--color-hover-area))
+        );
+        --data-table-color-footer-area: var(--data-table-color-base);
+    }
+
+    &_theme_internal {
+        --data-table-color-base: #ffffff;
+        --data-table-color-stripe: rgba(0, 0, 0, 0.03);
+        --data-table-border-color: #dddddd;
+        --data-table-color-hover-area: #ffeba0;
+        --data-table-color-footer-area: var(--data-table-color-base);
+    }
+}

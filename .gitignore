@@ -1,0 +1,8 @@
+node_modules
+
+npm-debug.log*
+example/dist
+.idea/
+build/
+dist/public/
+storybook-static/
