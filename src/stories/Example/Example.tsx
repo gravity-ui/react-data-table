@@ -2,19 +2,19 @@ import * as React from 'react';
 import cn from 'bem-cn-lite';
 
 import {data, columns, footerData, headerData} from '../data/data';
-import DataTable, {HeadPosition, OrderType} from '../../lib';
+import DataTable, {OrderType} from '../../lib';
 
 import './Example.scss';
 const b = cn('dt100-example');
 
-const stickyHeadValues = {
+export const StickyHeadValues = {
     MOVING: DataTable.MOVING,
     FIXED: DataTable.FIXED,
 } as const;
 
 export interface ExampleProps {
     allowGroups?: boolean;
-    stickyHeadValues?: HeadPosition;
+    stickyHeadValues?: 'fixed' | 'moving';
     fixHead?: boolean;
     fixFooter?: boolean;
     stickyTop?: number;
@@ -25,14 +25,14 @@ export interface ExampleProps {
     stripedRows?: boolean;
     displayIndices?: boolean;
     highlightRows?: boolean;
-    dynamicRenderType?: 'simple' | 'uniform' | 'variable' | undefined;
+    dynamicRenderType?: 'simple' | 'uniform' | 'variable';
     dynamicRenderUseStaticSize?: boolean;
-    theme?: string;
+    theme?: 'internal' | 'common';
 }
 
 export const defaultProps = {
     allowGroups: false,
-    stickyHeadValues: stickyHeadValues.MOVING,
+    stickyHeadValues: StickyHeadValues.MOVING,
     fixHead: false,
     fixFooter: false,
     stickyTop: 0,
@@ -45,7 +45,7 @@ export const defaultProps = {
     highlightRows: true,
     dynamicRenderType: undefined,
     dynamicRenderUseStaticSize: false,
-    theme: 'internal',
+    theme: 'internal' as const,
 };
 
 function getState({
@@ -103,7 +103,7 @@ export default function Example(props: ExampleProps) {
     columns[1].group = !settings.dynamicRenderType && allowGroups;
 
     return (
-        <div className={b({fixed: fixType === stickyHeadValues.FIXED})}>
+        <div className={b({fixed: fixType === StickyHeadValues.FIXED})}>
             <div className={b('table')}>
                 <DataTable
                     theme={theme}
