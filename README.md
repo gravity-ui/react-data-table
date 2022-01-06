@@ -22,7 +22,7 @@
 | rowClassName | `Function` |          |         | Метод, устанавливающий класс для строки `(row, index, isFooterRow, isHeaderRow) => (<string>)` |
 | rowKey       | `Function` |          |         | Метод, возвращающий значение react-key `(row, index) => (<scalar_type_value>)`. Метод по умолчанию возвращает `row.id` &#124;&#124;` index` |
 | initialSortOrder | `Object`   |      |         | Начальная сортировка в формате `{columnId: <string>, order: <DataTable.ASCENDING `&#124;` DataTable.DESCENDING>}`, или список таких объектов. |
-| theme        | `String`   |          |         | Имя темы. Для использования встроенной темы таблицы используется значение `internal` |
+| theme        | `String`   |          |'yandex-cloud' | Имя темы. Для использования встроенной темы таблицы используется значение `legacy`, для совместимости с цветами @yandex-cloud/uikit используйте 'yandex-cloud' (по умолчанию) |
 | onSort       | `Function` |          |         | Обработчик сортировки `([{columnId: <string>, order: <DataTable.ASCENDING `&#124;` DataTable.DESCENDING>}]) => void`. Можно использовать для сохранения состояния сортировки и передачи в initialSortOrder при рефреше страницы. |
 | sortOrder    | `Object`   |          |         | Сортировка в формате `{columnId: <string>, order: <DataTable.ASCENDING `&#124;` DataTable.DESCENDING>}`, или список таких объектов. |
 | visibleRowIndex | `Function` |       |         | Метод `(row, index) => number`, возвращающий значение индекса строки для отображения в колонке включаемой настройкой `displayIndices`. Может использоваться для правильного указания индекса строки при внешней сортировки|

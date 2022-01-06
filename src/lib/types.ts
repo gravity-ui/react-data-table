@@ -1,7 +1,17 @@
 import * as React from 'react';
 import ReactList from 'react-list';
 
-import {ASCENDING, CENTER, DESCENDING, FIXED, LEFT, MOVING, RIGHT} from './constants';
+import {
+    ASCENDING,
+    CENTER,
+    DESCENDING,
+    FIXED,
+    LEFT,
+    LEGACY_THEME,
+    MOVING,
+    RIGHT,
+    YCLOUD_THEME,
+} from './constants';
 
 type HeaderData<T> = T & {headerIndex?: number};
 type FooterData<T> = T & {footerIndex?: number};
@@ -117,6 +127,7 @@ export interface SortOrder {
 }
 
 export type HeadPosition = typeof FIXED | typeof MOVING;
+export type THEMES = typeof LEGACY_THEME | typeof YCLOUD_THEME;
 
 export interface SortedDataItem<T> {
     row: T;

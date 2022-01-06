@@ -977,7 +977,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             Object.prototype.hasOwnProperty.call(row, 'id') ? row.id : index,
         initialSortOrder: {},
         initialSortColumns: [],
-        theme: 'internal',
+        theme: 'yandex-cloud',
     };
 
     static getSortedData = getSortedData;
@@ -1325,8 +1325,6 @@ interface HasHeaderFooterIndex {
 }
 
 export default class DataTable<T> extends React.PureComponent<DataTableProps<T>, State> {
-    static readonly displayName = 'DT100';
-
     static readonly FIXED = FIXED;
     static readonly MOVING = MOVING;
 
@@ -1365,15 +1363,10 @@ export default class DataTable<T> extends React.PureComponent<DataTableProps<T>,
     }
     render() {
         const {error} = this.state;
-        if (!this.props.theme) {
-            console.warn(
-                "Starting from dt100@1.4.0 'theme' prop should be passed into the component",
-            );
-        }
         if (error) {
             return (
                 <pre className={b('error')}>
-                    DT100 got stuck in invalid state. Please tell developers about it.
+                    DataTable got stuck in invalid state. Please tell developers about it.
                     {'\n\n'}
                     {(error.stack && String(error.stack)) || String(error)}
                 </pre>

@@ -2,10 +2,11 @@ import * as React from 'react';
 import cn from 'bem-cn-lite';
 
 import {data, columns, footerData, headerData} from '../data/data';
-import DataTable, {OrderType} from '../../lib';
+import DataTable, {HeadPosition, OrderType, THEMES} from '../../lib';
 
 import './Example.scss';
-const b = cn('dt100-example');
+import {YCLOUD_THEME} from '../../lib/constants';
+const b = cn('datable-example');
 
 export const StickyHeadValues = {
     MOVING: DataTable.MOVING,
@@ -14,7 +15,7 @@ export const StickyHeadValues = {
 
 export interface ExampleProps {
     allowGroups?: boolean;
-    stickyHeadValues?: 'fixed' | 'moving';
+    stickyHeadValues?: HeadPosition;
     fixHead?: boolean;
     fixFooter?: boolean;
     stickyTop?: number;
@@ -27,7 +28,7 @@ export interface ExampleProps {
     highlightRows?: boolean;
     dynamicRenderType?: 'simple' | 'uniform' | 'variable';
     dynamicRenderUseStaticSize?: boolean;
-    theme?: 'internal' | 'common';
+    theme?: THEMES;
 }
 
 export const defaultProps = {
@@ -45,7 +46,7 @@ export const defaultProps = {
     highlightRows: true,
     dynamicRenderType: undefined,
     dynamicRenderUseStaticSize: false,
-    theme: 'internal' as const,
+    theme: YCLOUD_THEME as THEMES,
 };
 
 function getState({

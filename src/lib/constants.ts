@@ -8,6 +8,9 @@ export const RIGHT = 'right';
 export const FIXED = 'fixed';
 export const MOVING = 'moving';
 
+export const LEGACY_THEME = 'legacy';
+export const YCLOUD_THEME = 'yandex-cloud';
+
 export const INDEX_COLUMN = '__index__';
 
 export const UI_TIMEOUT = 500;
