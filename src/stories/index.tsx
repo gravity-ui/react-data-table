@@ -13,3 +13,16 @@ const Template = (args: ExampleProps) => <ExampleDT100 {...args} />;
 
 export const Default: Story<ExampleProps> = Template.bind({});
 Default.args = defaultProps;
+Default.argTypes = {
+    stickyHeadValues: {
+        options: ['moving', 'fixed'],
+        control: {type: 'select'},
+    },
+    dynamicRenderType: {
+        options: ['simple', 'uniform', 'variable'],
+    },
+    theme: {
+        options: ['internal', 'common'],
+        control: {type: 'select'},
+    },
+};
