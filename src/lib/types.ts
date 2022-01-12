@@ -36,7 +36,7 @@ export interface DataTableProps<T> {
     initialSortOrder?: SortOrder | SortOrder[];
     sortOrder?: SortOrder | SortOrder[];
 
-    theme: 'common' | 'internal' | string;
+    theme: THEMES | string;
     onSort?: (sortOrder: DataTableProps<T>['initialSortOrder']) => void;
 
     onRowClick?: (row: T, index: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
