@@ -21,7 +21,8 @@
     "test": "jest",
     "build:clean": "rm -rf build",
     "build:compile": "tsc",
-    "build": "npm run build:clean && npm run build:compile",
+    "build:copy": "copyfiles -u 1 \"src/**/*.scss\" build/esm",
+    "build": "npm run build:clean && npm run build:compile && npm run build:copy",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -58,6 +59,7 @@
     "@yandex-cloud/tsconfig": "^1.0.0",
     "@yandex-cloud/uikit": "^1.0.0",
     "bem-cn-lite": "^4.0.0",
+    "copyfiles": "^2.4.1",
     "css-loader": "^5.2.7",
     "eslint": "^8.2.0",
     "husky": "^7.0.4",
