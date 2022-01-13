@@ -251,7 +251,7 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
             <th
                 ref={column.dataColumn ? this._getColumnRef(columnIndex!) : null}
                 className={b('th', {sortable, align}, className)}
-                key={column.name}
+                key={`${column.name}-${index}`}
                 title={headerTitle}
                 data-index={index}
                 colSpan={colSpan}
