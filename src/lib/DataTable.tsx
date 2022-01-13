@@ -1330,7 +1330,7 @@ interface HasHeaderFooterIndex {
     id?: number;
 }
 
-function doColumnsHaveDuplicateNames(columns: Column<any>[]) {
+function doColumnsHaveDuplicateNames<T>(columns: Column<T>[]) {
     const names = new Set(columns.map((column) => column.name));
     return names.size !== columns.length;
 }
