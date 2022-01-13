@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.2](https://www.github.com/yandex-cloud/react-data-table/compare/v0.2.1...v0.2.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* emit a warning when columns with duplicate names are provided ([08d0294](https://www.github.com/yandex-cloud/react-data-table/commit/08d029422cceae9145b3aa65d99b2931ec106441))
+
 ### [0.2.1](https://www.github.com/yandex-cloud/react-data-table/compare/v0.2.0...v0.2.1) (2022-01-12)
 
 
