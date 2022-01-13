@@ -1330,6 +1330,16 @@ interface HasHeaderFooterIndex {
     id?: number;
 }
 
+function doColumnsHaveDuplicateNames(columns: Column<any>[]) {
+    const names = new Set(columns.map((column) => column.name));
+    return names.size !== columns.length;
+}
+
+const DUPLICATE_COLUMN_NAMES_WARNING =
+    'It is strongly recommended against using duplicate column names. ' +
+    'They act as default accessors and titles, so doing so may lead to confusing titles and the wrong ' +
+    'data being extracted.';
+
 export default class DataTable<T> extends React.PureComponent<DataTableProps<T>, State> {
     static readonly FIXED = FIXED;
     static readonly MOVING = MOVING;
@@ -1348,6 +1358,19 @@ export default class DataTable<T> extends React.PureComponent<DataTableProps<T>,
 
     table?: DataTableView<T>;
     state: State = {};
+
+    componentDidMount() {
+        if (doColumnsHaveDuplicateNames(this.props.columns)) {
+            console.warn(DUPLICATE_COLUMN_NAMES_WARNING);
+        }
+    }
+
+    componentDidUpdate(prevProps: Readonly<DataTableProps<T>>) {
+        const {columns} = this.props;
+        if (columns !== prevProps.columns && doColumnsHaveDuplicateNames(columns)) {
+            console.warn(DUPLICATE_COLUMN_NAMES_WARNING);
+        }
+    }
 
     componentDidCatch(error: unknown) {
         console.error(error);
