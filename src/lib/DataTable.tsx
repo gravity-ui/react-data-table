@@ -94,12 +94,6 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
     static defaultProps = {
         footer: false,
     };
-    onClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
-        if (this.props.onClick) {
-            const {row, index} = this.props;
-            this.props.onClick(row, index, event);
-        }
-    };
     render() {
         const {className, columns, row, index, odd, footer, span, headerData} = this.props;
         return (
@@ -141,6 +135,12 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
             </tr>
         );
     }
+    onClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
+        if (this.props.onClick) {
+            const {row, index} = this.props;
+            this.props.onClick(row, index, event);
+        }
+    };
 }
 
 interface TableHeadProps<T> {
@@ -169,13 +169,6 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
     dataRowsHeightObserver?: HeightObserver;
     renderedColumns: HTMLTableHeaderCellElement[] = [];
 
-    dataRowsRef = (ref: HTMLTableSectionElement) => {
-        this._dataRowsRef = ref;
-        if (ref) {
-            this.dataRowsHeightObserver?.checkAndUpdateHeight();
-        }
-    };
-
     componentDidMount() {
         this._calculateColumnsWidth();
         if ('function' === typeof this.props.onDataRowsHeightChange) {
@@ -199,11 +192,19 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
         this.dataRowsHeightObserver?.destroy();
     }
 
-    _getColumnRef = (index: number) => {
-        return (node: HTMLTableHeaderCellElement) => {
-            this.renderedColumns[index] = node;
-        };
-    };
+    render() {
+        const {headColumns, dataColumns, renderedDataRows} = this.props;
+        this.renderedColumns.length = dataColumns.length;
+        return (
+            <React.Fragment>
+                <thead className={b('head')}>{headColumns.map(this.renderHeadLevel)}</thead>
+                {renderedDataRows === undefined ? null : (
+                    <tbody ref={this.dataRowsRef}>{renderedDataRows}</tbody>
+                )}
+            </React.Fragment>
+        );
+    }
+
     _calculateColumnsWidth() {
         const {onColumnsUpdated} = this.props;
         if (typeof onColumnsUpdated === 'function') {
@@ -273,18 +274,19 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
             </tr>
         );
     };
-    render() {
-        const {headColumns, dataColumns, renderedDataRows} = this.props;
-        this.renderedColumns.length = dataColumns.length;
-        return (
-            <React.Fragment>
-                <thead className={b('head')}>{headColumns.map(this.renderHeadLevel)}</thead>
-                {renderedDataRows === undefined ? null : (
-                    <tbody ref={this.dataRowsRef}>{renderedDataRows}</tbody>
-                )}
-            </React.Fragment>
-        );
-    }
+
+    dataRowsRef = (ref: HTMLTableSectionElement) => {
+        this._dataRowsRef = ref;
+        if (ref) {
+            this.dataRowsHeightObserver?.checkAndUpdateHeight();
+        }
+    };
+
+    _getColumnRef = (index: number) => {
+        return (node: HTMLTableHeaderCellElement) => {
+            this.renderedColumns[index] = node;
+        };
+    };
 }
 
 interface StickyHeadProps<T> {
@@ -329,9 +331,30 @@ class StickyHead<T> extends React.Component<StickyHeadProps<T>, StickyHeadState>
     heightObserver?: HeightObserver;
 
     _node?: HTMLElement;
-    _nodeRef = (node: HTMLDivElement) => {
-        this._node = node;
-    };
+
+    render() {
+        const {mode, top: _top, ...props} = this.props;
+        if (mode === MOVING) {
+            const {style} = this.state;
+            return (
+                <div className={b('sticky', {moving: true, head: true})} style={style}>
+                    {this.renderHeader(props)}
+                </div>
+            );
+        } else {
+            const {widths = [], right = 0} = this.state;
+            const totalWidth = widths.reduce((sum, val) => sum + val, 0);
+            return (
+                <div
+                    ref={this._nodeRef}
+                    className={b('sticky', {fixed: true, head: true})}
+                    style={{right: right, display: totalWidth ? undefined : 'none'}}
+                >
+                    {this.renderHeader(props)}
+                </div>
+            );
+        }
+    }
 
     setScrollLeft(scrollLeft: number) {
         requestAnimationFrame(() => {
@@ -370,29 +393,9 @@ class StickyHead<T> extends React.Component<StickyHeadProps<T>, StickyHeadState>
             this.setState({widths: newWidths});
         }
     }
-    render() {
-        const {mode, top: _top, ...props} = this.props;
-        if (mode === MOVING) {
-            const {style} = this.state;
-            return (
-                <div className={b('sticky', {moving: true, head: true})} style={style}>
-                    {this.renderHeader(props)}
-                </div>
-            );
-        } else {
-            const {widths = [], right = 0} = this.state;
-            const totalWidth = widths.reduce((sum, val) => sum + val, 0);
-            return (
-                <div
-                    ref={this._nodeRef}
-                    className={b('sticky', {fixed: true, head: true})}
-                    style={{right: right, display: totalWidth ? undefined : 'none'}}
-                >
-                    {this.renderHeader(props)}
-                </div>
-            );
-        }
-    }
+    _nodeRef = (node: HTMLDivElement) => {
+        this._node = node;
+    };
 }
 
 interface StickyFooterProps<T> {
@@ -427,6 +430,53 @@ class StickyFooter<T> extends React.PureComponent<StickyFooterProps<T>, StickyFo
 
     _nodeFixed: HTMLElement | null = null;
     _nodeMoving: HTMLElement | null = null;
+
+    componentDidMount() {
+        this.heightObserver = new HeightObserver({
+            getSrcElement: () => this._nodeMoving,
+            onHeightChange: this.props.onMovingHeightChange,
+        });
+    }
+
+    componentDidUpdate() {
+        this.heightObserver?.checkAndUpdateHeight();
+    }
+
+    componentWillUnmount() {
+        this.heightObserver?.destroy();
+    }
+
+    render() {
+        if (!this.props.renderedRows) {
+            return null;
+        }
+        const {mode, renderedRows} = this.props;
+        if (mode === MOVING) {
+            const {style} = this.state;
+            return (
+                <div
+                    ref={this._nodeMovingRef}
+                    className={b('sticky', {footer: true, moving: true})}
+                    style={style}
+                >
+                    {this.renderFooter(renderedRows)}
+                </div>
+            );
+        } else {
+            const {widths = [], right = 0} = this.state;
+            const totalWidth = widths.reduce((sum, val) => sum + val, 0);
+            return (
+                <div
+                    ref={this._nodeFixedRef}
+                    className={b('sticky', {footer: true, fixed: true})}
+                    style={{right: right, display: totalWidth ? undefined : 'none'}}
+                >
+                    {this.renderFooter(renderedRows)}
+                </div>
+            );
+        }
+    }
+
     _nodeFixedRef = (node: HTMLDivElement) => {
         this._nodeFixed = node;
     };
@@ -436,21 +486,6 @@ class StickyFooter<T> extends React.PureComponent<StickyFooterProps<T>, StickyFo
             this.heightObserver?.checkAndUpdateHeight();
         }
     };
-
-    componentDidMount() {
-        this.heightObserver = new HeightObserver({
-            getSrcElement: () => this._nodeMoving,
-            onHeightChange: this.props.onMovingHeightChange,
-        });
-    }
-
-    componentWillUnmount() {
-        this.heightObserver?.destroy();
-    }
-
-    componentDidUpdate() {
-        this.heightObserver?.checkAndUpdateHeight();
-    }
 
     setScrollLeft(scrollLeft: number) {
         requestAnimationFrame(() => {
@@ -484,36 +519,6 @@ class StickyFooter<T> extends React.PureComponent<StickyFooterProps<T>, StickyFo
         const {widths = []} = this.state;
         if (newWidths.some((v, i) => v !== widths[i])) {
             this.setState({widths: newWidths});
-        }
-    }
-    render() {
-        if (!this.props.renderedRows) {
-            return null;
-        }
-        const {mode, renderedRows} = this.props;
-        if (mode === MOVING) {
-            const {style} = this.state;
-            return (
-                <div
-                    ref={this._nodeMovingRef}
-                    className={b('sticky', {footer: true, moving: true})}
-                    style={style}
-                >
-                    {this.renderFooter(renderedRows)}
-                </div>
-            );
-        } else {
-            const {widths = [], right = 0} = this.state;
-            const totalWidth = widths.reduce((sum, val) => sum + val, 0);
-            return (
-                <div
-                    ref={this._nodeFixedRef}
-                    className={b('sticky', {footer: true, fixed: true})}
-                    style={{right: right, display: totalWidth ? undefined : 'none'}}
-                >
-                    {this.renderFooter(renderedRows)}
-                </div>
-            );
         }
     }
 }
@@ -589,6 +594,27 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
             window.removeEventListener('resize', this._onWindowResize);
             delete this._onWindowResize;
         }
+    }
+
+    render() {
+        const {className} = this.props;
+        const {stickyHead, dynamicRender} = this.props.settings;
+
+        const stickyFooter = this.getStickyFooterMode();
+
+        return (
+            <div className={className} ref={this._refBody}>
+                {stickyHead && this.renderStickyHead()}
+                <div
+                    ref={this._refBox}
+                    className={b('box', {'sticky-head': stickyHead, 'sticky-footer': stickyFooter})}
+                    onScroll={this._onBoxScroll}
+                >
+                    {dynamicRender ? this.renderTableDynamic() : this.renderTableSimple()}
+                </div>
+                {stickyFooter && this.renderStickyFooter()}
+            </div>
+        );
     }
 
     _refBody = (node: HTMLDivElement) => {
@@ -779,11 +805,11 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
         return (
             <div
                 className={b('table-wrapper')}
-                style={stickyFooterMode === DataTable.MOVING ? movingFooterStyle : undefined}
+                style={stickyFooterMode === MOVING ? movingFooterStyle : undefined}
             >
                 <table
                     className={b('table')}
-                    style={stickyHead === DataTable.MOVING ? movingHeaderStyle : undefined}
+                    style={stickyHead === MOVING ? movingHeaderStyle : undefined}
                 >
                     <colgroup>
                         {dataColumns.map(({width}, index) => {
@@ -854,26 +880,6 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
         }
         const {stickyFooter} = this.props.settings;
         return stickyFooter;
-    }
-    render() {
-        const {className} = this.props;
-        const {stickyHead, dynamicRender} = this.props.settings;
-
-        const stickyFooter = this.getStickyFooterMode();
-
-        return (
-            <div className={className} ref={this._refBody}>
-                {stickyHead && this.renderStickyHead()}
-                <div
-                    ref={this._refBox}
-                    className={b('box', {'sticky-head': stickyHead, 'sticky-footer': stickyFooter})}
-                    onScroll={this._onBoxScroll}
-                >
-                    {dynamicRender ? this.renderTableDynamic() : this.renderTableSimple()}
-                </div>
-                {stickyFooter && this.renderStickyFooter()}
-            </div>
-        );
     }
 }
 
@@ -1050,6 +1056,69 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
 
     table?: Table<T>;
 
+    render() {
+        const {
+            headerData,
+            data,
+            footerData,
+            columns,
+            startIndex,
+            emptyDataMessage,
+            rowClassName,
+            rowKey,
+            onRowClick,
+            theme,
+            renderEmptyRow,
+            nullBeforeNumbers,
+        } = this.props;
+
+        const {settings, sortOrder, sortColumns} = this.state;
+        const {highlightRows = false, stripedRows = false, headerMod = false} = settings;
+        const tableClassName = b({
+            'highlight-rows': highlightRows,
+            'striped-rows': stripedRows,
+            header: headerMod,
+            theme: theme,
+        });
+
+        const dataColumns = this.getComplexColumns(columns);
+        if (settings.dynamicRender && dataColumns.dataColumns.some((column) => column.group)) {
+            console.warn(
+                'Simultaneously used grouping cells and dynamic render. The table will render unpredictable.',
+            );
+        }
+
+        return (
+            <Table
+                ref={this._tableRef}
+                className={tableClassName}
+                settings={settings}
+                startIndex={startIndex}
+                columns={dataColumns}
+                emptyDataMessage={emptyDataMessage}
+                renderEmptyRow={renderEmptyRow}
+                rowClassName={rowClassName}
+                rowKey={rowKey || DataTableView.defaultProps.rowKey}
+                onRowClick={onRowClick}
+                headerData={headerData}
+                data={getSortedData(
+                    data,
+                    dataColumns.dataColumns,
+                    {
+                        sortOrder,
+                        sortColumns,
+                    },
+                    {
+                        nullBeforeNumbers,
+                        externalSort: settings?.externalSort,
+                    },
+                )}
+                footerData={footerData}
+                onSort={this.onSort}
+            />
+        );
+    }
+
     _tableRef = (node: Table<T>) => {
         this.table = node;
     };
@@ -1215,69 +1284,6 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             this.table.syncHeadWidths();
         }
     }
-
-    render() {
-        const {
-            headerData,
-            data,
-            footerData,
-            columns,
-            startIndex,
-            emptyDataMessage,
-            rowClassName,
-            rowKey,
-            onRowClick,
-            theme,
-            renderEmptyRow,
-            nullBeforeNumbers,
-        } = this.props;
-
-        const {settings, sortOrder, sortColumns} = this.state;
-        const {highlightRows = false, stripedRows = false, headerMod = false} = settings;
-        const tableClassName = b({
-            'highlight-rows': highlightRows,
-            'striped-rows': stripedRows,
-            header: headerMod,
-            theme: theme,
-        });
-
-        const dataColumns = this.getComplexColumns(columns);
-        if (settings.dynamicRender && dataColumns.dataColumns.some((column) => column.group)) {
-            console.warn(
-                'Simultaneously used grouping cells and dynamic render. The table will render unpredictable.',
-            );
-        }
-
-        return (
-            <Table
-                ref={this._tableRef}
-                className={tableClassName}
-                settings={settings}
-                startIndex={startIndex}
-                columns={dataColumns}
-                emptyDataMessage={emptyDataMessage}
-                renderEmptyRow={renderEmptyRow}
-                rowClassName={rowClassName}
-                rowKey={rowKey || DataTableView.defaultProps.rowKey}
-                onRowClick={onRowClick}
-                headerData={headerData}
-                data={getSortedData(
-                    data,
-                    dataColumns.dataColumns,
-                    {
-                        sortOrder,
-                        sortColumns,
-                    },
-                    {
-                        nullBeforeNumbers,
-                        externalSort: settings?.externalSort,
-                    },
-                )}
-                footerData={footerData}
-                onSort={this.onSort}
-            />
-        );
-    }
 }
 
 export type ColumnExtended<T> = ReturnType<DataTableView<T>['getColumn']> & {headerTitle?: string};
@@ -1342,6 +1348,7 @@ export default class DataTable<T> extends React.PureComponent<DataTableProps<T>,
 
     table?: DataTableView<T>;
     state: State = {};
+
     componentDidCatch(error: unknown) {
         console.error(error);
         this.setState({
@@ -1353,14 +1360,7 @@ export default class DataTable<T> extends React.PureComponent<DataTableProps<T>,
             onError(error);
         }
     }
-    _tableRef = (node: DataTableView<T>) => {
-        this.table = node;
-    };
-    resize() {
-        if (this.table) {
-            this.table.resize();
-        }
-    }
+
     render() {
         const {error} = this.state;
         if (error) {
@@ -1373,6 +1373,15 @@ export default class DataTable<T> extends React.PureComponent<DataTableProps<T>,
             );
         } else {
             return <DataTableView ref={this._tableRef} {...this.props} />;
+        }
+    }
+
+    _tableRef = (node: DataTableView<T>) => {
+        this.table = node;
+    };
+    resize() {
+        if (this.table) {
+            this.table.resize();
         }
     }
 }
