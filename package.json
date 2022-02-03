@@ -1,6 +1,6 @@
 {
   "name": "@yandex-cloud/react-data-table",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "DataTable component",
   "main": "build/esm/lib/index.js",
   "types": "build/esm/lib/index.d.ts",
