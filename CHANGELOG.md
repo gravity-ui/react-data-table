@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://www.github.com/yandex-cloud/react-data-table/compare/v0.2.2...v1.0.0) (2022-02-03)
+
+
+### docs
+
+* translate README.md ([160c576](https://www.github.com/yandex-cloud/react-data-table/commit/160c576a9869ea03f4b80ce172c2f537036aeae4))
+
 ### [0.2.2](https://www.github.com/yandex-cloud/react-data-table/compare/v0.2.1...v0.2.2) (2022-01-13)
 
 
