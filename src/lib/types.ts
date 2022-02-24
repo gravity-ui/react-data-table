@@ -51,7 +51,7 @@ export interface Column<T> {
     header?: React.ReactNode;
     headerTitle?: string;
     className?: string;
-    width?: number;
+    width?: number | string;
     align?: AlignType;
 
     accessor?: string | ((row: T) => any);
