@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://www.github.com/yandex-cloud/react-data-table/compare/v1.0.0...v1.0.1) (2022-02-25)
+
+
+### Bug Fixes
+
+* clarify column width property type ([4b43afe](https://www.github.com/yandex-cloud/react-data-table/commit/4b43afe96ac0fe515b08e492ede12f9ed3299dec))
+
 ## [1.0.0](https://www.github.com/yandex-cloud/react-data-table/compare/v0.2.2...v1.0.0) (2022-02-03)
 
 
