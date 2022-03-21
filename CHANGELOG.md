@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.2](https://www.github.com/yandex-cloud/react-data-table/compare/v1.0.1...v1.0.2) (2022-03-21)
+
+
+### chore
+
+* freeze direct dependencies ([a842bf4](https://www.github.com/yandex-cloud/react-data-table/commit/a842bf48ccd09c2f8a6158bb1250b5b6643844b5))
+
 ### [1.0.1](https://www.github.com/yandex-cloud/react-data-table/compare/v1.0.0...v1.0.1) (2022-02-25)
 
 
