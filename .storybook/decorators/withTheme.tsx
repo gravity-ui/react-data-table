@@ -1,6 +1,6 @@
+import {useTheme} from '@gravity-ui/uikit';
+import {StoryContext, Story as StoryType} from '@storybook/react';
 import React from 'react';
-import {Story as StoryType, StoryContext} from '@storybook/react';
-import {useTheme} from '@yandex-cloud/uikit';
 
 export function withTheme(Story: StoryType, context: StoryContext) {
     const themeValue = context.globals.theme;

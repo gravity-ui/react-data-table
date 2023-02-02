@@ -1,10 +1,10 @@
-import '@yandex-cloud/uikit/styles/styles.scss';
+import '@gravity-ui/uikit/styles/styles.scss';
 
 import React from 'react';
 import {MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
 import {CloudTheme} from './theme';
 import {withTheme} from './decorators/withTheme';
-import {ThemeProvider} from '@yandex-cloud/uikit';
+import {ThemeProvider} from '@gravity-ui/uikit';
 
 const withContextProvider = (Story, context) => {
     const theme = context.globals.theme;
