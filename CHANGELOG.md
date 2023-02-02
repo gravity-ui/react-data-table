@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/gravity-ui/react-data-table/compare/v1.0.2...v1.0.3) (2023-02-02)
+
+
+### Bug Fixes
+
+* move to gravity uikit ([#24](https://github.com/gravity-ui/react-data-table/issues/24)) ([98c7fa6](https://github.com/gravity-ui/react-data-table/commit/98c7fa6b89b2253a9f8df9909f017b556295c36b))
+
 ### [1.0.2](https://www.github.com/yandex-cloud/react-data-table/compare/v1.0.1...v1.0.2) (2022-03-21)
 
 
