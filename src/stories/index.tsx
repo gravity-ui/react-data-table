@@ -1,9 +1,11 @@
 /* eslint-env node */
-import * as React from 'react';
 import {Meta, Story} from '@storybook/react';
+import * as React from 'react';
+
 import DataTable from '../lib';
-import ExampleDT100, {defaultProps, ExampleProps} from './Example/Example';
 import {FIXED, LEGACY_THEME, MOVING, YCLOUD_THEME} from '../lib/constants';
+
+import ExampleDT100, {ExampleProps, defaultProps} from './Example/Example';
 
 export default {
     title: 'React Data Table',

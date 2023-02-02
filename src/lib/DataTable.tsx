@@ -1,23 +1,22 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import ReactList from 'react-list';
 import cn from 'bem-cn-lite';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import ReactList from 'react-list';
 
+import './DataTable.scss';
+import {ASCENDING, CENTER, DESCENDING, FIXED, INDEX_COLUMN, LEFT, MOVING, RIGHT} from './constants';
 import {positionStickySupported} from './featureSupport';
-import {DataTableProps, Column, Settings, OrderType, HeadPosition, SortedDataItem} from './types';
+import {HeightObserver} from './height-observer';
+import {Column, DataTableProps, HeadPosition, OrderType, Settings, SortedDataItem} from './types';
 import {
+    SlimColumn,
+    externalToInternalSortOrder,
     getSortOrder,
     getSortedData,
-    externalToInternalSortOrder,
     internalToExternalSortOrder,
-    SlimColumn,
 } from './util';
-import './DataTable.scss';
 
 const b = cn('data-table');
-
-import {ASCENDING, DESCENDING, LEFT, RIGHT, CENTER, FIXED, MOVING, INDEX_COLUMN} from './constants';
-import {HeightObserver} from './height-observer';
 
 const ICON_ASC = (
     <svg className={b('icon')} viewBox="0 0 10 6" width="10" height="6">
