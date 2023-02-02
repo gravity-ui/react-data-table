@@ -1,11 +1,12 @@
-import * as React from 'react';
 import cn from 'bem-cn-lite';
+import * as React from 'react';
 
-import {data, columns, footerData, headerData} from '../data/data';
 import DataTable, {HeadPosition, OrderType, THEMES} from '../../lib';
+import {YCLOUD_THEME} from '../../lib/constants';
+import {columns, data, footerData, headerData} from '../data/data';
 
 import './Example.scss';
-import {YCLOUD_THEME} from '../../lib/constants';
+
 const b = cn('datable-example');
 
 export const StickyHeadValues = {

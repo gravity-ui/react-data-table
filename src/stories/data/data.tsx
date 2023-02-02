@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import DataTable, {Column} from '../../lib';
 
 const data = new Array(500)
@@ -79,7 +80,6 @@ const columns: Column<RowType>[] = [
     },
     {
         name: 'bar',
-        // eslint-disable-next-line react/display-name
         render: ({value}) => (
             <div style={{width: value as number, height: 10, background: '#18b0ff'}} />
         ),

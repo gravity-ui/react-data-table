@@ -1,7 +1,6 @@
-import {ASCENDING, DESCENDING} from './constants';
 import {ColumnExtended, NameToOrderTypeMap, SortOrderWithSortColumns} from './DataTable';
-
-import {OrderType, Settings, SortOrder, SortedDataItem, Comparator} from './types';
+import {ASCENDING, DESCENDING} from './constants';
+import {Comparator, OrderType, Settings, SortOrder, SortedDataItem} from './types';
 
 export type SlimColumn = {name: string; defaultOrder?: OrderType};
 
