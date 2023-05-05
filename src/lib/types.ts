@@ -67,6 +67,7 @@ export interface Column<T> {
     onClick?: (
         data: {row: T; index: number; footer?: boolean; headerData?: boolean},
         column: Column<T>,
+        event: React.MouseEvent<HTMLTableCellElement>,
     ) => void;
 
     sortable?: boolean;

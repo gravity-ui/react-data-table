@@ -1185,8 +1185,9 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
 
         const _getOnClick =
             typeof onClick === 'function'
-                ? (data: {row: T; index: number; footer?: boolean; headerData?: boolean}) => () =>
-                      onClick(data, column)
+                ? (data: {row: T; index: number; footer?: boolean; headerData?: boolean}) =>
+                      (event: React.MouseEvent<HTMLTableCellElement>) =>
+                          onClick(data, column, event)
                 : () => undefined;
 
         return {
