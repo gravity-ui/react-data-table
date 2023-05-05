@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/gravity-ui/react-data-table/compare/v1.0.3...v1.1.0) (2023-05-05)
+
+
+### Features
+
+* add event in cell click handler ([#26](https://github.com/gravity-ui/react-data-table/issues/26)) ([11e7a00](https://github.com/gravity-ui/react-data-table/commit/11e7a0067d980f6e3a215468d86df9b6a691428f))
+
 ## [1.0.3](https://github.com/gravity-ui/react-data-table/compare/v1.0.2...v1.0.3) (2023-02-02)
 
 
