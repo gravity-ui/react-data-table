@@ -7,10 +7,8 @@ module.exports = {
     preset: 'ts-jest',
     moduleDirectories: ['node_modules', 'src/lib'],
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
-    testEnvironment: 'jsdom',
     testMatch: ['**/*.test.js'],
     transform: {
         'src/test/.+\\.(j|t)sx?$': 'ts-jest',
     },
-    transformIgnorePatterns: ['node_modules/(?!(@yandex-cloud)/)'],
 };

@@ -1062,7 +1062,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
         };
     }
 
-    static getDerivedStateFromProps<T>(nextProps: InternalProps<T>) {
+    static getDerivedStateFromProps<T extends HasHeaderFooterIndex>(nextProps: InternalProps<T>) {
         const settings = DataTableView.calculateSettings(nextProps.settings);
         return {
             settings,
