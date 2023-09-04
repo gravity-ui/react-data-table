@@ -1,7 +1,10 @@
+import {withNaming} from '@bem-react/classname';
+
 import {ColumnExtended, NameToOrderTypeMap, SortOrderWithSortColumns} from './DataTable';
 import {ASCENDING, DESCENDING} from './constants';
 import {Comparator, OrderType, Settings, SortOrder, SortedDataItem} from './types';
 
+export const cn = withNaming({e: '__', m: '_'});
 export type SlimColumn = {name: string; defaultOrder?: OrderType};
 
 export function getSortOrder(

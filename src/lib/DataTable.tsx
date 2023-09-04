@@ -1,4 +1,3 @@
-import cn from 'bem-cn-lite';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import ReactList from 'react-list';
@@ -10,6 +9,7 @@ import {HeightObserver} from './height-observer';
 import {Column, DataTableProps, HeadPosition, OrderType, Settings, SortedDataItem} from './types';
 import {
     SlimColumn,
+    cn,
     externalToInternalSortOrder,
     getSortOrder,
     getSortedData,

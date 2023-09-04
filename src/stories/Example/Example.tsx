@@ -1,8 +1,8 @@
-import cn from 'bem-cn-lite';
 import * as React from 'react';
 
 import DataTable, {HeadPosition, OrderType, THEMES} from '../../lib';
 import {YCLOUD_THEME} from '../../lib/constants';
+import {cn} from '../../lib/util';
 import {columns, data, footerData, headerData} from '../data/data';
 
 import './Example.scss';
