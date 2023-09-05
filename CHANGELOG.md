@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/gravity-ui/react-data-table/compare/v1.1.0...v1.2.0) (2023-09-05)
+
+
+### Features
+
+* migrate to @bem-react/classname ([#32](https://github.com/gravity-ui/react-data-table/issues/32)) ([af0987e](https://github.com/gravity-ui/react-data-table/commit/af0987e65e68766747a7956ff8521014c6037648))
+
 ## [1.1.0](https://github.com/gravity-ui/react-data-table/compare/v1.0.3...v1.1.0) (2023-05-05)
 
 
