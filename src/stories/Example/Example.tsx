@@ -114,6 +114,13 @@ export default function Example(props: ExampleProps) {
                     onSort={(sortOrderState) => {
                         console.log(sortOrderState);
                     }}
+                    getColSpansOfRow={({row}) => {
+                        if (row.number % 100 === 0) {
+                            return {number: 5};
+                        }
+
+                        return undefined;
+                    }}
                     headerData={headerData}
                     footerData={footerData}
                     settings={settings}
