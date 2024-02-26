@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ReactList from 'react-list';
 
+import type {TableRowProps} from './DataTable';
 import {
     ASCENDING,
     CENTER,
@@ -44,6 +45,10 @@ export interface DataTableProps<T> {
     onError?: (error: unknown) => void;
 
     nullBeforeNumbers?: boolean;
+
+    getColSpansOfRow?: (
+        p: Omit<TableRowProps<T>, 'getColSpansOfRow' | 'onClick' | 'className'>,
+    ) => {[colName: string]: number} | undefined;
 }
 
 export interface Column<T> {
