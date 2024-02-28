@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/gravity-ui/react-data-table/compare/v1.2.0...v1.3.0) (2024-02-28)
+
+
+### Features
+
+* add custom colspan for table row ([3316f62](https://github.com/gravity-ui/react-data-table/commit/3316f6283a1f504035c381f1baed6245f086e086))
+
 ## [1.2.0](https://github.com/gravity-ui/react-data-table/compare/v1.1.0...v1.2.0) (2023-09-05)
 
 
