@@ -16,6 +16,7 @@
     "lint:styles": "stylelint 'src/**/*.scss'",
     "lint": "run-p lint:*",
     "prettier": "prettier '**/*.{md,json,yaml,yml}'",
+    "dev": "npm run start",
     "start": "start-storybook -p 7007",
     "build-storybook": "build-storybook -c .storybook -o storybook-static",
     "typecheck": "npm run build:compile -- --noEmit",

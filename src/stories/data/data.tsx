@@ -26,6 +26,7 @@ const footerData = new Array(4)
     .map((_empty, index) => {
         return {
             number: index + 1,
+            col1: undefined,
             string: `footer_${index + 1}`,
             complex: {
                 value: index + 5,
@@ -41,6 +42,7 @@ const headerData = [2, 0]
     .map((_empty, index) => {
         return {
             number: index + 1,
+            col1: undefined,
             string: `header_${index + 1}`,
             complex: {
                 value: index + 5,

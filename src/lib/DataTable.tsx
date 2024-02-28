@@ -556,7 +556,7 @@ interface TableProps<T> {
     onSort: DataTableView<T>['onSort'];
     renderEmptyRow: unknown;
     nullBeforeNumbers?: boolean;
-    getColSpansOfRow: (
+    getColSpansOfRow?: (
         p: Omit<TableRowProps<T>, 'getColSpansOfRow' | 'onClick' | 'className'>,
     ) => {[colName: string]: number} | undefined;
 }

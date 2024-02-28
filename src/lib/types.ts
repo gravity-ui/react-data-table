@@ -46,7 +46,7 @@ export interface DataTableProps<T> {
 
     nullBeforeNumbers?: boolean;
 
-    getColSpansOfRow: (
+    getColSpansOfRow?: (
         p: Omit<TableRowProps<T>, 'getColSpansOfRow' | 'onClick' | 'className'>,
     ) => {[colName: string]: number} | undefined;
 }

@@ -30,6 +30,7 @@ export interface ExampleProps {
     dynamicRenderType?: 'simple' | 'uniform' | 'variable';
     dynamicRenderUseStaticSize?: boolean;
     theme?: THEMES;
+    getColSpansOfRowCol1?: number;
 }
 
 export const defaultProps = {
@@ -48,6 +49,7 @@ export const defaultProps = {
     dynamicRenderType: undefined,
     dynamicRenderUseStaticSize: false,
     theme: YCLOUD_THEME as THEMES,
+    getColSpansOfRowCol1: 7,
 };
 
 function getState({
@@ -66,6 +68,7 @@ function getState({
     dynamicRenderType,
     dynamicRenderUseStaticSize = defaultProps.dynamicRenderUseStaticSize,
     theme = defaultProps.theme,
+    getColSpansOfRowCol1 = defaultProps.getColSpansOfRowCol1,
 }: ExampleProps) {
     const initialSettings = {
         displayIndices: true,
@@ -95,11 +98,12 @@ function getState({
         },
         theme,
         allowGroups,
+        getColSpansOfRowCol1,
     };
 }
 
 export default function Example(props: ExampleProps) {
-    const {settings, allowGroups, theme} = getState(props);
+    const {settings, allowGroups, theme, getColSpansOfRowCol1} = getState(props);
     const fixType = props.stickyHeadValues;
 
     columns[1].group = !settings.dynamicRenderType && allowGroups;
@@ -114,13 +118,17 @@ export default function Example(props: ExampleProps) {
                     onSort={(sortOrderState) => {
                         console.log(sortOrderState);
                     }}
-                    getColSpansOfRow={({row}) => {
-                        if (row.number % 100 === 0) {
-                            return {number: 5};
-                        }
+                    getColSpansOfRow={
+                        getColSpansOfRowCol1 > 0
+                            ? ({row}) => {
+                                  if (row.col1! % 10 === 0) {
+                                      return {col1: getColSpansOfRowCol1};
+                                  }
 
-                        return undefined;
-                    }}
+                                  return undefined;
+                              }
+                            : undefined
+                    }
                     headerData={headerData}
                     footerData={footerData}
                     settings={settings}
