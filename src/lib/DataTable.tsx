@@ -1,4 +1,3 @@
-import cn from 'bem-cn-lite';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import ReactList from 'react-list';
@@ -10,6 +9,7 @@ import {HeightObserver} from './height-observer';
 import {Column, DataTableProps, HeadPosition, OrderType, Settings, SortedDataItem} from './types';
 import {
     SlimColumn,
+    cn,
     externalToInternalSortOrder,
     getSortOrder,
     getSortedData,
@@ -76,7 +76,7 @@ ColumnSortIcon.propTypes = {
     defaultOrder: PropTypes.oneOf([ASCENDING, DESCENDING]),
 };
 
-interface TableRowProps<T> {
+export interface TableRowProps<T> {
     row: T;
     index: number;
     columns: DataColumns<T>;
@@ -87,6 +87,9 @@ interface TableRowProps<T> {
     headerData?: boolean;
     onClick?: (row: T, index: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
     span?: {[colName: string]: number};
+    getColSpansOfRow?: (
+        p: Omit<TableRowProps<T>, 'getColSpansOfRow' | 'onClick' | 'className'>,
+    ) => {[colName: string]: number} | undefined;
 }
 
 class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
@@ -94,13 +97,28 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
         footer: false,
     };
     render() {
-        const {className, columns, row, index, odd, footer, span, headerData} = this.props;
+        const {className, columns, row, index, odd, footer, span, getColSpansOfRow, headerData} =
+            this.props;
+        const colSpans = getColSpansOfRow ? getColSpansOfRow(this.props) : undefined;
+
+        let restColSpan = 0;
+
         return (
             <tr
                 className={b('row', {odd, footer, 'header-data': headerData}, className)}
                 onClick={this.onClick}
             >
                 {columns.map((column, columnIndex) => {
+                    if (colSpans) {
+                        if (--restColSpan > 0) {
+                            return null;
+                        }
+
+                        if (colSpans[column.name] > 1) {
+                            restColSpan = colSpans[column.name];
+                        }
+                    }
+
                     let rowSpan;
                     if (span) {
                         if (span[column.name] === 0) {
@@ -124,6 +142,7 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
                                 footer,
                                 headerData,
                             })}
+                            colSpan={colSpans ? colSpans[column.name] : undefined}
                             rowSpan={rowSpan}
                             onClick={column._getOnClick({row, index, footer, headerData})}
                         >
@@ -537,6 +556,9 @@ interface TableProps<T> {
     onSort: DataTableView<T>['onSort'];
     renderEmptyRow: unknown;
     nullBeforeNumbers?: boolean;
+    getColSpansOfRow?: (
+        p: Omit<TableRowProps<T>, 'getColSpansOfRow' | 'onClick' | 'className'>,
+    ) => {[colName: string]: number} | undefined;
 }
 
 interface TableState {
@@ -560,6 +582,7 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
         startIndex: PropTypes.number,
         onSort: PropTypes.func,
         renderEmptyRow: PropTypes.func,
+        getColSpansOfRow: PropTypes.func,
     };
 
     state: TableState = {};
@@ -774,12 +797,14 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
             columns: {dataColumns},
             rowClassName,
             rowKey,
+            getColSpansOfRow,
         } = this.props;
         const className =
             typeof rowClassName === 'function' ? rowClassName(row, index, footer, headerData) : '';
 
         return (
             <TableRow
+                getColSpansOfRow={getColSpansOfRow}
                 key={rowKey(row, index)}
                 className={className}
                 columns={dataColumns}
@@ -924,6 +949,7 @@ interface DataTableViewState<T> extends SortOrderWithSortColumns {
 type HeadPositionInner = HeadPosition | false;
 class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewState<T>> {
     static propTypes = {
+        getColSpansOfRow: PropTypes.func,
         columns: PropTypes.array.isRequired,
         headerData: PropTypes.array,
         data: PropTypes.array.isRequired,
@@ -1057,6 +1083,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
 
     render() {
         const {
+            getColSpansOfRow,
             headerData,
             data,
             footerData,
@@ -1090,6 +1117,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
         return (
             <Table
                 ref={this._tableRef}
+                getColSpansOfRow={getColSpansOfRow}
                 className={tableClassName}
                 settings={settings}
                 startIndex={startIndex}

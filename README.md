@@ -1,4 +1,4 @@
-# React Data Table
+# React Data Table &middot; [![npm package](https://img.shields.io/npm/v/@gravity-ui/react-data-table)](https://www.npmjs.com/package/@gravity-ui/react-data-table) [![CI](https://img.shields.io/github/actions/workflow/status/gravity-ui/react-data-table/.github/workflows/ci.yml?label=CI&logo=github)](https://github.com/gravity-ui/react-data-table/actions/workflows/ci.yml?query=branch:main) [![storybook](https://img.shields.io/badge/Storybook-deployed-ff4685)](https://preview.gravity-ui.com/react-data-table/)
 
 A React component for rendering tables.
 
@@ -28,6 +28,7 @@ of the sort list. A simple Click sorts the table by this column only. Sorting or
 | visibleRowIndex   | `Function` |          |                | A method `(row, index) => number` that returns the row index shown in the column enabled by the `displayIndices` flag. Use it to specify a correct row index when applying external sorting                                                                             |
 | onRowClick        | `Function` |          |                | Click listener for a row `(row, index, event) => void`                                                                                                                                                                                                                  |
 | nullBeforeNumbers | `Boolean`  |          |                | A flag that sets the position of `null`/`undefined` values when sorting. If true, `null`/`undefined` values are shown at the top in the case of ascending order and at the bottom in the case of descending order. If `false`/`undefined`, they are shown at the bottom |
+| getColSpansOfRow  | `Function` |          |                | Configuring column spanning for each row `({ row, columns, index, headerData, span, footer, odd }) => {[colName: string]: number} / undefined`                                                                                                                          |
 
 ## Settings
 
