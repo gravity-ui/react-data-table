@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/gravity-ui/react-data-table/compare/v1.3.0...v2.0.0) (2024-03-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove obsolete css-variables from "yandex-cloud" theme
+* update @gravity-ui/uikit v5 (+others)
+
+### refactor
+
+* remove obsolete css-variables from "yandex-cloud" theme ([56e46d9](https://github.com/gravity-ui/react-data-table/commit/56e46d982d442a1a4699ded7aeb11e145eb30d90))
+
+
+### chore
+
+* update @gravity-ui/uikit v5 (+others) ([ad0f8fd](https://github.com/gravity-ui/react-data-table/commit/ad0f8fdb78ea7f4ee43b663d96c275ccb39c2fcc))
+
 ## [1.3.0](https://github.com/gravity-ui/react-data-table/compare/v1.2.0...v1.3.0) (2024-02-28)
 
 
