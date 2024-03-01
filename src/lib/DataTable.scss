@@ -244,21 +244,18 @@ $cell-border: 1px solid var(--data-table-border-color);
     }
 
     &_theme_yandex-cloud {
-        --data-table-color-base: var(
-            --yc-color-base-background,
-            var(--yc-color-base, var(--color-base))
-        );
+        --data-table-color-base: var(--g-color-base-background, var(--yc-color-base-background));
         --data-table-color-stripe: var(
-            --yc-color-base-generic-ultralight,
-            var(--yc-color-base-area, var(--color-base-area))
+            --g-color-base-generic-ultralight,
+            var(--yc-color-base-generic-ultralight)
         );
         --data-table-border-color: var(
-            --yc-color-base-generic-hover,
-            var(--yc-color-contrast-15-solid, var(--color-contrast-15-solid))
+            --g-color-base-generic-hover,
+            var(--yc-color-base-generic-hover)
         );
         --data-table-color-hover-area: var(
-            --yc-color-base-simple-hover,
-            var(--yc-color-hover-area, var(--color-hover-area))
+            --g-color-base-simple-hover,
+            var(--yc-color-base-simple-hover)
         );
         --data-table-color-footer-area: var(--data-table-color-base);
     }
