@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import * as React from 'react';
 import ReactList from 'react-list';
 
@@ -68,12 +67,6 @@ const ColumnSortIcon = ({sortOrder, sortIndex, sortable, defaultOrder}: ColumnSo
     } else {
         return null;
     }
-};
-
-ColumnSortIcon.propTypes = {
-    sortOrder: PropTypes.oneOf([ASCENDING, DESCENDING]),
-    sortable: PropTypes.bool,
-    defaultOrder: PropTypes.oneOf([ASCENDING, DESCENDING]),
 };
 
 export interface TableRowProps<T> {
@@ -174,15 +167,6 @@ interface TableHeadProps<T> {
 }
 
 class TableHead<T> extends React.Component<TableHeadProps<T>> {
-    static propTypes = {
-        headColumns: PropTypes.array.isRequired,
-        dataColumns: PropTypes.array.isRequired,
-        displayIndices: PropTypes.bool.isRequired,
-        onSort: PropTypes.func,
-        onColumnsUpdated: PropTypes.func,
-        renderedDataRows: PropTypes.node,
-    };
-
     _dataRowsRef: HTMLTableSectionElement | null = null;
     dataRowsHeightObserver?: HeightObserver;
     renderedColumns: HTMLTableHeaderCellElement[] = [];
@@ -316,6 +300,7 @@ interface StickyHeadProps<T> {
     onSort?: TableProps<T>['onSort'];
     top: number;
 
+    renderedDataRows: React.ReactNode;
     onDataRowsHeightChange: (height: number) => void;
 }
 
@@ -326,11 +311,6 @@ interface StickyHeadState {
 }
 
 class StickyHead<T> extends React.Component<StickyHeadProps<T>, StickyHeadState> {
-    static propTypes = {
-        mode: PropTypes.oneOf([FIXED, MOVING]),
-        top: PropTypes.number,
-        renderedDataRows: PropTypes.node,
-    };
     static defaultProps = {
         top: 0,
     };
@@ -567,24 +547,6 @@ interface TableState {
 }
 
 class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
-    static propTypes = {
-        className: PropTypes.string,
-        settings: PropTypes.object,
-        refs: PropTypes.object,
-        headerData: PropTypes.array,
-        data: PropTypes.array,
-        footerData: PropTypes.array,
-        columns: PropTypes.object,
-        emptyDataMessage: PropTypes.string,
-        onRowClick: PropTypes.func,
-        rowClassName: PropTypes.func,
-        rowKey: PropTypes.func,
-        startIndex: PropTypes.number,
-        onSort: PropTypes.func,
-        renderEmptyRow: PropTypes.func,
-        getColSpansOfRow: PropTypes.func,
-    };
-
     state: TableState = {};
 
     _onWindowResize?: () => void;
@@ -934,11 +896,6 @@ function CellImpl<T>(props: CellProps<T>) {
     );
 }
 
-const sortOrderShape = {
-    columnId: PropTypes.string,
-    order: PropTypes.oneOf([ASCENDING, DESCENDING]),
-};
-
 type InternalProps<T> = DataTableProps<T> & typeof DataTableView.defaultProps;
 
 interface DataTableViewState<T> extends SortOrderWithSortColumns {
@@ -948,50 +905,6 @@ interface DataTableViewState<T> extends SortOrderWithSortColumns {
 
 type HeadPositionInner = HeadPosition | false;
 class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewState<T>> {
-    static propTypes = {
-        getColSpansOfRow: PropTypes.func,
-        columns: PropTypes.array.isRequired,
-        headerData: PropTypes.array,
-        data: PropTypes.array.isRequired,
-        footerData: PropTypes.array,
-        startIndex: PropTypes.number,
-        emptyDataMessage: PropTypes.string,
-        renderEmptyRow: PropTypes.func,
-        rowClassName: PropTypes.func,
-        rowKey: PropTypes.func,
-        visibleRowIndex: PropTypes.func,
-        initialSortOrder: PropTypes.oneOfType([
-            PropTypes.shape(sortOrderShape),
-            PropTypes.arrayOf(PropTypes.shape(sortOrderShape)),
-        ]),
-        sortOrder: PropTypes.oneOfType([
-            PropTypes.shape(sortOrderShape),
-            PropTypes.arrayOf(PropTypes.shape(sortOrderShape)),
-        ]),
-        settings: PropTypes.shape({
-            displayIndices: PropTypes.bool,
-            dynamicRender: PropTypes.bool,
-            dynamicRenderType: PropTypes.oneOf(['simple', 'uniform', 'variable']),
-            dynamicRenderUseStaticSize: PropTypes.bool,
-            dynamicRenderThreshold: PropTypes.number,
-            dynamicRenderMinSize: PropTypes.number,
-            dynamicRenderScrollParentGetter: PropTypes.func,
-            dynamicRenderScrollParentViewportSizeGetter: PropTypes.func,
-            dynamicItemSizeEstimator: PropTypes.func,
-            dynamicItemSizeGetter: PropTypes.func,
-            stickyHead: PropTypes.oneOf([false, FIXED, MOVING]),
-            stickyTop: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['auto'])]),
-            sortable: PropTypes.bool,
-            externalSort: PropTypes.bool,
-            highlightRows: PropTypes.bool,
-            stripedRows: PropTypes.bool,
-            headerMod: PropTypes.oneOf(['multiline', 'pre']),
-            defaultOrder: PropTypes.oneOf([ASCENDING, DESCENDING]),
-            syncHeadOnResize: PropTypes.bool,
-        }),
-        theme: PropTypes.string,
-        onSort: PropTypes.func,
-    };
     static defaultProps = {
         startIndex: 0,
         emptyDataMessage: 'No data',

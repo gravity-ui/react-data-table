@@ -50,6 +50,7 @@
     ]
   },
   "dependencies": {
+    "@bem-react/classname": ">=1.6.0",
     "react-list": "^0.8.17"
   },
   "devDependencies": {
@@ -92,8 +93,6 @@
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "@bem-react/classname": ">=1.6.0",
-    "prop-types": ">=15.8.0",
     "react": ">=16.14.0"
   },
   "publishConfig": {
