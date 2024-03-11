@@ -51,7 +51,8 @@
   },
   "dependencies": {
     "@bem-react/classname": ">=1.6.0",
-    "react-list": "^0.8.17"
+    "react-list": "^0.8.17",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
     "@bem-react/classname": "^1.6.0",
