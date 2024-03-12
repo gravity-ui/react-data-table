@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/gravity-ui/react-data-table/compare/v2.0.0...v2.0.1) (2024-03-12)
+
+
+### Bug Fixes
+
+* add tslib to dependencies ([e1895db](https://github.com/gravity-ui/react-data-table/commit/e1895dbd2b006ac297ed6c2b4196a46a1ec35507))
+
 ## [2.0.0](https://github.com/gravity-ui/react-data-table/compare/v1.3.0...v2.0.0) (2024-03-01)
 
 
