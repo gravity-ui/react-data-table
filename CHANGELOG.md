@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/gravity-ui/react-data-table/compare/v2.0.1...v2.1.0) (2024-04-12)
+
+
+### Features
+
+* add columns resize ([#41](https://github.com/gravity-ui/react-data-table/issues/41)) ([2d3f79f](https://github.com/gravity-ui/react-data-table/commit/2d3f79f003966411b9630df073d9c07f3b302bde))
+
 ## [2.0.1](https://github.com/gravity-ui/react-data-table/compare/v2.0.0...v2.0.1) (2024-03-12)
 
 
