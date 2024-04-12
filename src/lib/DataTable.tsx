@@ -2,20 +2,19 @@ import * as React from 'react';
 import ReactList from 'react-list';
 
 import './DataTable.scss';
+import {ResizeHandler} from './ResizeHandler';
 import {ASCENDING, CENTER, DESCENDING, FIXED, INDEX_COLUMN, LEFT, MOVING, RIGHT} from './constants';
 import {positionStickySupported} from './featureSupport';
 import {HeightObserver} from './height-observer';
 import {Column, DataTableProps, HeadPosition, OrderType, Settings, SortedDataItem} from './types';
 import {
     SlimColumn,
-    cn,
+    b,
     externalToInternalSortOrder,
     getSortOrder,
     getSortedData,
     internalToExternalSortOrder,
 } from './util';
-
-const b = cn('data-table');
 
 const ICON_ASC = (
     <svg className={b('icon')} viewBox="0 0 10 6" width="10" height="6">
@@ -122,19 +121,27 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
                     }
 
                     const value = column._getValue(row);
+
+                    let style = column.customStyle({
+                        row,
+                        index,
+                        name: column.name,
+                        header: false,
+                        footer,
+                        headerData,
+                    });
+
+                    // Fixed cell width for resizeable columns for proper content wrap
+                    if (column.resizeable) {
+                        style = {...style, width: column.width, maxWidth: column.width};
+                    }
+
                     return (
                         <td
                             key={columnIndex}
                             className={column._className}
                             title={column._getTitle(row)}
-                            style={column.customStyle({
-                                row,
-                                index,
-                                name: column.name,
-                                header: false,
-                                footer,
-                                headerData,
-                            })}
+                            style={style}
                             colSpan={colSpans ? colSpans[column.name] : undefined}
                             rowSpan={rowSpan}
                             onClick={column._getOnClick({row, index, footer, headerData})}
@@ -160,6 +167,7 @@ interface TableHeadProps<T> {
     displayIndices?: boolean;
 
     onSort?: TableProps<T>['onSort'];
+    onResize?: TableProps<T>['onResize'];
     onColumnsUpdated?: (widths: number[]) => void;
     renderedDataRows?: React.ReactNode;
 
@@ -169,7 +177,7 @@ interface TableHeadProps<T> {
 class TableHead<T> extends React.Component<TableHeadProps<T>> {
     _dataRowsRef: HTMLTableSectionElement | null = null;
     dataRowsHeightObserver?: HeightObserver;
-    renderedColumns: HTMLTableHeaderCellElement[] = [];
+    renderedColumns: HTMLTableCellElement[] = [];
 
     componentDidMount() {
         this._calculateColumnsWidth();
@@ -238,6 +246,7 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
             : undefined;
     }
     renderHeadCell = (headCell: HeadCellsType<T>) => {
+        const {onResize} = this.props;
         const {column, rowSpan, colSpan} = headCell;
         const {
             sortable = false,
@@ -246,26 +255,48 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
             index,
             columnIndex,
             align,
+            name,
+            width,
+            resizeable,
+            resizeMinWidth,
+            resizeMaxWidth,
         } = column;
 
         const {headerTitle = (typeof header === 'string' && header) || undefined} = column;
+
+        let style = column.customStyle?.({header: true, name});
+
+        // Fixed cell width for resizeable columns for proper content wrap
+        if (resizeable) {
+            style = {...style, width, maxWidth: width};
+        }
 
         return (
             <th
                 ref={column.dataColumn ? this._getColumnRef(columnIndex!) : null}
                 className={b('th', {sortable, align}, className)}
-                key={column.name}
+                key={name}
                 title={headerTitle}
                 data-index={index}
                 colSpan={colSpan}
                 rowSpan={rowSpan}
-                style={column.customStyle && column.customStyle({header: true, name: column.name})}
+                style={style}
                 onClick={this._getOnSortClick(column)}
             >
                 <div className={b('head-cell')}>
                     {header}
                     {<ColumnSortIcon {...column} />}
                 </div>
+                {resizeable && (
+                    <ResizeHandler
+                        getColumn={this._getRenderedColumn}
+                        columnIndex={columnIndex}
+                        onResize={onResize}
+                        columnId={name}
+                        minWidth={resizeMinWidth}
+                        maxWidth={resizeMaxWidth}
+                    />
+                )}
             </th>
         );
     };
@@ -289,6 +320,12 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
             this.renderedColumns[index] = node;
         };
     };
+    _getRenderedColumn = (index?: number) => {
+        if (index) {
+            return this.renderedColumns[index];
+        }
+        return undefined;
+    };
 }
 
 interface StickyHeadProps<T> {
@@ -298,6 +335,7 @@ interface StickyHeadProps<T> {
     mode: HeadPositionInner;
     displayIndices?: Settings['displayIndices'];
     onSort?: TableProps<T>['onSort'];
+    onResize?: TableProps<T>['onResize'];
     top: number;
 
     renderedDataRows: React.ReactNode;
@@ -534,6 +572,7 @@ interface TableProps<T> {
     rowKey: (row: T, index: number) => string | number;
     startIndex: DataTableProps<T>['startIndex'];
     onSort: DataTableView<T>['onSort'];
+    onResize: DataTableProps<T>['onResize'];
     renderEmptyRow: unknown;
     nullBeforeNumbers?: boolean;
     getColSpansOfRow?: (
@@ -673,7 +712,7 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
     }
 
     renderHead() {
-        const {columns, onSort} = this.props;
+        const {columns, onSort, onResize} = this.props;
         const {displayIndices} = this.props.settings;
         const rows = this.renderHeaderRows();
         return (
@@ -682,13 +721,14 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
                 {...columns}
                 displayIndices={Boolean(displayIndices)}
                 onSort={onSort}
+                onResize={onResize}
                 onColumnsUpdated={this._onColumnsUpdated}
                 renderedDataRows={rows}
             />
         );
     }
     renderStickyHead() {
-        const {columns, onSort} = this.props;
+        const {columns, onSort, onResize} = this.props;
         const {displayIndices, stickyTop, stickyHead} = this.props.settings;
         const top =
             stickyTop === 'auto' && this._body && this._body.parentNode
@@ -703,6 +743,7 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
                 {...columns}
                 displayIndices={displayIndices}
                 onSort={onSort}
+                onResize={onResize}
                 renderedDataRows={rows}
                 onDataRowsHeightChange={this.onMovingHeaderDataRowsHeightChange}
             />
@@ -916,6 +957,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             sortable: true,
             externalSort: false,
             defaultOrder: ASCENDING as OrderType,
+            defaultResizeable: false,
         },
         rowKey: (row: any, index: number) =>
             Object.prototype.hasOwnProperty.call(row, 'id') ? row.id : index,
@@ -971,6 +1013,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
                 return startIndex + index;
             },
             sortable: false,
+            resizeable: false,
             width: 20 + Math.ceil(Math.log10(lastIndex)) * 10,
         };
     }
@@ -1006,6 +1049,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             rowClassName,
             rowKey,
             onRowClick,
+            onResize,
             theme,
             renderEmptyRow,
             nullBeforeNumbers,
@@ -1055,6 +1099,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
                 )}
                 footerData={footerData}
                 onSort={this.onSort}
+                onResize={onResize}
             />
         );
     }
@@ -1079,6 +1124,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
     };
 
     getColumn = (column: Column<T>, columnIndex: number) => {
+        const {onResize} = this.props;
         const {settings} = this.state;
         const {defaultOrder} = settings;
         const {sortOrder = {}, sortColumns, indexColumn} = this.state;
@@ -1097,6 +1143,8 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
 
         const {sortAccessor, onClick} = column;
         const _className = b('td', {align}, column.className);
+
+        const resizeable = (column.resizeable ?? settings.defaultResizeable) && Boolean(onResize);
 
         const _getValue =
             typeof accessor === 'function'
@@ -1137,6 +1185,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             dataColumn: true,
             defaultOrder,
             ...column,
+            resizeable,
             sortable: sortable && isSortEnabled,
             _className,
             _getValue,

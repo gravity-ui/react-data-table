@@ -67,6 +67,7 @@ $cell-border: 1px solid var(--data-table-border-color);
     }
 
     &__th {
+        box-sizing: border-box;
         font-weight: 500;
         cursor: default;
         padding: var(--data-table-header-vertical-padding) var(--data-table-cell-horizontal-padding);
@@ -98,6 +99,7 @@ $cell-border: 1px solid var(--data-table-border-color);
     }
 
     &__td {
+        box-sizing: border-box;
         padding: var(--data-table-cell-vertical-padding) var(--data-table-cell-horizontal-padding);
         border: $cell-border;
         vertical-align: var(--data-table-cell-align);
@@ -266,5 +268,23 @@ $cell-border: 1px solid var(--data-table-border-color);
         --data-table-border-color: #dddddd;
         --data-table-color-hover-area: #ffeba0;
         --data-table-color-footer-area: var(--data-table-color-base);
+    }
+
+    &__resize-handler {
+        visibility: hidden;
+        position: absolute;
+        right: 0;
+        top: 0;
+        cursor: col-resize;
+        width: 6px;
+        height: 100%;
+        background-color: var(--g-color-base-generic);
+
+        &_resizing {
+            visibility: visible;
+        }
+    }
+    &__th:hover > &__resize-handler {
+        visibility: visible;
     }
 }

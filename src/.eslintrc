@@ -1,3 +1,6 @@
 {
-    "extends": ["@gravity-ui/eslint-config", "@gravity-ui/eslint-config/prettier"]
+    "extends": ["@gravity-ui/eslint-config", "@gravity-ui/eslint-config/prettier"],
+    "rules": {
+        "no-implicit-globals": "off"
+    }
 }

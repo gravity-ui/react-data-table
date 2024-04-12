@@ -40,6 +40,8 @@ export interface DataTableProps<T> {
     theme: THEMES | string;
     onSort?: (sortOrder: DataTableProps<T>['initialSortOrder']) => void;
 
+    onResize?: HandleResize;
+
     onRowClick?: (row: T, index: number, event: React.MouseEvent<HTMLTableRowElement>) => void;
 
     onError?: (error: unknown) => void;
@@ -82,6 +84,10 @@ export interface Column<T> {
     sub?: Column<T>[];
     group?: boolean;
     autogroup?: boolean;
+
+    resizeable?: boolean;
+    resizeMinWidth?: number;
+    resizeMaxWidth?: number;
 }
 
 export type DynamicInnerRefT = ReactList;
@@ -109,6 +115,7 @@ export interface Settings {
     externalSort?: boolean;
     disableSortReset?: boolean;
     defaultOrder?: OrderType;
+    defaultResizeable?: boolean;
     highlightRows?: boolean;
     stripedRows?: boolean;
     headerMod?: 'multiline' | 'pre';
@@ -142,3 +149,5 @@ export interface SortedDataItem<T> {
 }
 
 export type Comparator<T> = (l: SortedDataItem<T>, r: SortedDataItem<T>) => number;
+
+export type HandleResize = (columnId: string, newWidth: number) => void;
