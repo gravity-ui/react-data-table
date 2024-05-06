@@ -9,13 +9,12 @@ export type GetSavedColumnWidthByName = () => ColumnWidthByName;
 export function updateColumnsWidth<T>(
     columns: Column<T>[],
     columnsWidthSetup: ColumnWidthByName,
-    defaultResizeable = false,
 ): Column<T>[] {
     return columns.map((column) => {
         let sub: Column<T>[] | undefined;
 
         if (column.sub) {
-            sub = updateColumnsWidth(column.sub, columnsWidthSetup, defaultResizeable);
+            sub = updateColumnsWidth(column.sub, columnsWidthSetup);
         }
 
         const newWidth = columnsWidthSetup[column.name] ?? column.width;
