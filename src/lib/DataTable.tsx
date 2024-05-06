@@ -321,7 +321,7 @@ class TableHead<T> extends React.Component<TableHeadProps<T>> {
         };
     };
     _getRenderedColumn = (index?: number) => {
-        if (index) {
+        if (index !== undefined) {
             return this.renderedColumns[index];
         }
         return undefined;
