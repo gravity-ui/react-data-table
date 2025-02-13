@@ -97,6 +97,7 @@ export interface Settings {
     stickyHead?: HeadPosition;
     stickyTop?: 'auto' | number;
     syncHeadOnResize?: boolean;
+    maxIndex?: number;
 
     stickyFooter?: HeadPosition;
     stickyBottom?: 'auto' | number;

@@ -993,6 +993,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
         startIndex,
         data,
         visibleRowIndex,
+        settings,
     }: InternalProps<T>): Column<T> {
         const lastIndex = startIndex + data.length + 1;
 
@@ -1014,7 +1015,7 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
             },
             sortable: false,
             resizeable: false,
-            width: 20 + Math.ceil(Math.log10(lastIndex)) * 10,
+            width: 20 + Math.ceil(Math.log10(settings?.maxIndex || lastIndex)) * 10,
         };
     }
 
