@@ -92,12 +92,15 @@ export interface Column<T> {
 
 export type DynamicInnerRefT = ReactList;
 
+export interface DisplayIndicesConfig {
+    maxIndex: number;
+}
+
 export interface Settings {
-    displayIndices?: boolean;
+    displayIndices?: boolean | DisplayIndicesConfig;
     stickyHead?: HeadPosition;
     stickyTop?: 'auto' | number;
     syncHeadOnResize?: boolean;
-    maxIndex?: number;
 
     stickyFooter?: HeadPosition;
     stickyBottom?: 'auto' | number;
