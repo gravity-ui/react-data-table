@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import DataTable, {HeadPosition, OrderType, THEMES} from '../../lib';
+import DataTable, {DisplayIndicesConfig, HeadPosition, OrderType, THEMES} from '../../lib';
 import {YCLOUD_THEME} from '../../lib/constants';
 import {cn} from '../../lib/util';
 import {columns, data, footerData, headerData} from '../data/data';
@@ -25,7 +25,7 @@ export interface ExampleProps {
     externalSort?: boolean;
     disableSortReset?: boolean;
     stripedRows?: boolean;
-    displayIndices?: boolean;
+    displayIndices?: boolean | DisplayIndicesConfig;
     highlightRows?: boolean;
     dynamicRenderType?: 'simple' | 'uniform' | 'variable';
     dynamicRenderUseStaticSize?: boolean;

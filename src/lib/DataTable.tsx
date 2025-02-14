@@ -6,7 +6,15 @@ import {ResizeHandler} from './ResizeHandler';
 import {ASCENDING, CENTER, DESCENDING, FIXED, INDEX_COLUMN, LEFT, MOVING, RIGHT} from './constants';
 import {positionStickySupported} from './featureSupport';
 import {HeightObserver} from './height-observer';
-import {Column, DataTableProps, HeadPosition, OrderType, Settings, SortedDataItem} from './types';
+import {
+    Column,
+    DataTableProps,
+    DisplayIndicesConfig,
+    HeadPosition,
+    OrderType,
+    Settings,
+    SortedDataItem,
+} from './types';
 import {
     SlimColumn,
     b,
@@ -164,7 +172,7 @@ class TableRow<T> extends React.PureComponent<TableRowProps<T>> {
 interface TableHeadProps<T> {
     dataColumns: DataColumns<T>;
     headColumns: HeadColumns<T>;
-    displayIndices?: boolean;
+    displayIndices?: boolean | DisplayIndicesConfig;
 
     onSort?: TableProps<T>['onSort'];
     onResize?: TableProps<T>['onResize'];
@@ -937,7 +945,9 @@ function CellImpl<T>(props: CellProps<T>) {
     );
 }
 
-type InternalProps<T> = DataTableProps<T> & typeof DataTableView.defaultProps;
+type InternalProps<T> = DataTableProps<T> &
+    Omit<typeof DataTableView.defaultProps, 'settings'> &
+    Required<Pick<DataTableProps<T>, 'settings'>>;
 
 interface DataTableViewState<T> extends SortOrderWithSortColumns {
     indexColumn?: Column<T>;
@@ -993,8 +1003,12 @@ class DataTableView<T> extends React.Component<DataTableProps<T>, DataTableViewS
         startIndex,
         data,
         visibleRowIndex,
+        settings,
     }: InternalProps<T>): Column<T> {
-        const lastIndex = startIndex + data.length + 1;
+        const lastIndex =
+            typeof settings.displayIndices === 'object'
+                ? settings.displayIndices.maxIndex
+                : startIndex + data.length + 1;
 
         return {
             name: INDEX_COLUMN,
