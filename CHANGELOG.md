@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/gravity-ui/react-data-table/compare/v2.2.0...v2.2.1) (2025-02-14)
+
+
+### Bug Fixes
+
+* release ([#48](https://github.com/gravity-ui/react-data-table/issues/48)) ([ef841f5](https://github.com/gravity-ui/react-data-table/commit/ef841f583ae08b4537d7c987e74eb6171a42985b))
+
 ## [2.2.0](https://github.com/gravity-ui/react-data-table/compare/v2.1.1...v2.2.0) (2025-02-14)
 
 
