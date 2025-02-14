@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/gravity-ui/react-data-table/compare/v2.1.1...v2.2.0) (2025-02-14)
+
+
+### Features
+
+* add maxIndex setting to displayIndices ([#46](https://github.com/gravity-ui/react-data-table/issues/46)) ([2d90733](https://github.com/gravity-ui/react-data-table/commit/2d907331d4fe7050ace4ef8c1b68fd7141a127f4))
+
 ## [2.1.1](https://github.com/gravity-ui/react-data-table/compare/v2.1.0...v2.1.1) (2024-05-06)
 
 
