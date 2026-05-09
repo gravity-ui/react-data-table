@@ -12,9 +12,9 @@
  * debounces callbacks through requestAnimationFrame, and disconnects on unmount.
  */
 
+import '@testing-library/jest-dom';
+import {act, render} from '@testing-library/react';
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import {act} from 'react-dom/test-utils';
 
 import DataTable from '../lib/DataTable';
 
@@ -32,31 +32,19 @@ const DATA = [
     {name: 'Bob', value: 2},
 ];
 
-let container: HTMLDivElement;
-
 function renderTable(extraSettings: Record<string, unknown> = {}) {
-    act(() => {
-        ReactDOM.render(
-            <DataTable
-                columns={COLUMNS}
-                data={DATA}
-                theme="yandex-cloud"
-                settings={{
-                    stickyHead: DataTable.MOVING,
-                    syncHeadOnResize: true,
-                    ...extraSettings,
-                }}
-            />,
-            container,
-        );
-    });
-    return {container};
-}
-
-function unmountTable() {
-    act(() => {
-        ReactDOM.unmountComponentAtNode(container);
-    });
+    return render(
+        <DataTable
+            columns={COLUMNS}
+            data={DATA}
+            theme="yandex-cloud"
+            settings={{
+                stickyHead: DataTable.MOVING,
+                syncHeadOnResize: true,
+                ...extraSettings,
+            }}
+        />,
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -113,30 +101,6 @@ function mockCancelAnimationFrame(handle: number) {
 }
 
 // ---------------------------------------------------------------------------
-// Suppress React 18 legacy-API deprecation warnings.
-// The project pins @types/react-dom@16, so we use the legacy render API;
-// the warnings are expected and do not affect correctness.
-// ---------------------------------------------------------------------------
-beforeAll(() => {
-    jest.spyOn(console, 'error').mockImplementation((msg: string) => {
-        if (
-            typeof msg === 'string' &&
-            (msg.includes('ReactDOM.render is no longer supported') ||
-                msg.includes('ReactDOMTestUtils.act') ||
-                msg.includes('unmountComponentAtNode is deprecated'))
-        ) {
-            return;
-        }
-        // eslint-disable-next-line no-console
-        console.warn(msg);
-    });
-});
-
-afterAll(() => {
-    jest.restoreAllMocks();
-});
-
-// ---------------------------------------------------------------------------
 // Setup / teardown
 // ---------------------------------------------------------------------------
 
@@ -145,9 +109,6 @@ let originalRaf: typeof requestAnimationFrame;
 let originalCaf: typeof cancelAnimationFrame;
 
 beforeEach(() => {
-    container = document.createElement('div');
-    document.body.appendChild(container);
-
     MockResizeObserver.instances = [];
     rafCallbacks = [];
 
@@ -161,9 +122,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-    unmountTable();
-    container.remove();
-
     (global as any).ResizeObserver = originalResizeObserver;
     global.requestAnimationFrame = originalRaf;
     global.cancelAnimationFrame = originalCaf;
@@ -182,7 +140,7 @@ describe('ResizeObserver — setup and teardown', () => {
     });
 
     test('observes the _box element', () => {
-        renderTable();
+        const {container} = renderTable();
         const observer = MockResizeObserver.instances[0];
         expect(observer.observedTargets).toHaveLength(1);
         // _box is the scrollable wrapper div that carries data-table__box class
@@ -195,10 +153,10 @@ describe('ResizeObserver — setup and teardown', () => {
     });
 
     test('disconnects ResizeObserver on unmount', () => {
-        renderTable();
+        const {unmount} = renderTable();
         const observer = MockResizeObserver.instances[0];
         expect(observer.disconnected).toBe(false);
-        unmountTable();
+        unmount();
         expect(observer.disconnected).toBe(true);
     });
 });
