@@ -4,7 +4,7 @@
  * Tests for sticky-head / ResizeObserver integration.
  *
  * Problem: when cell content changes asynchronously (e.g. via useEffect +
- * dangerouslySetInnerHTML) only the <tbody> re-renders. Neither
+ * dangerouslySetInnerHTML), only the tbody re-renders. Neither
  * TableHead.componentDidUpdate nor window.resize fires, so the sticky head
  * stays at stale column widths.
  *
@@ -12,9 +12,9 @@
  * debounces callbacks through requestAnimationFrame, and disconnects on unmount.
  */
 
-import '@testing-library/jest-dom';
-import {act, render} from '@testing-library/react';
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import {act} from 'react-dom/test-utils';
 
 import DataTable from '../lib/DataTable';
 
@@ -32,15 +32,31 @@ const DATA = [
     {name: 'Bob', value: 2},
 ];
 
+let container: HTMLDivElement;
+
 function renderTable(extraSettings: Record<string, unknown> = {}) {
-    return render(
-        <DataTable
-            columns={COLUMNS}
-            data={DATA}
-            theme="yandex-cloud"
-            settings={{stickyHead: DataTable.MOVING, syncHeadOnResize: true, ...extraSettings}}
-        />,
-    );
+    act(() => {
+        ReactDOM.render(
+            <DataTable
+                columns={COLUMNS}
+                data={DATA}
+                theme="yandex-cloud"
+                settings={{
+                    stickyHead: DataTable.MOVING,
+                    syncHeadOnResize: true,
+                    ...extraSettings,
+                }}
+            />,
+            container,
+        );
+    });
+    return {container};
+}
+
+function unmountTable() {
+    act(() => {
+        ReactDOM.unmountComponentAtNode(container);
+    });
 }
 
 // ---------------------------------------------------------------------------
@@ -83,7 +99,7 @@ let rafCallbacks: FrameRequestCallback[] = [];
 
 function mockRaf(cb: FrameRequestCallback): number {
     rafCallbacks.push(cb);
-    return rafCallbacks.length; // non-zero handle, matches cancelAnimationFrame logic below
+    return rafCallbacks.length; // non-zero handle
 }
 
 function flushRaf() {
@@ -97,6 +113,30 @@ function mockCancelAnimationFrame(handle: number) {
 }
 
 // ---------------------------------------------------------------------------
+// Suppress React 18 legacy-API deprecation warnings.
+// The project pins @types/react-dom@16, so we use the legacy render API;
+// the warnings are expected and do not affect correctness.
+// ---------------------------------------------------------------------------
+beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation((msg: string) => {
+        if (
+            typeof msg === 'string' &&
+            (msg.includes('ReactDOM.render is no longer supported') ||
+                msg.includes('ReactDOMTestUtils.act') ||
+                msg.includes('unmountComponentAtNode is deprecated'))
+        ) {
+            return;
+        }
+        // eslint-disable-next-line no-console
+        console.warn(msg);
+    });
+});
+
+afterAll(() => {
+    jest.restoreAllMocks();
+});
+
+// ---------------------------------------------------------------------------
 // Setup / teardown
 // ---------------------------------------------------------------------------
 
@@ -105,6 +145,9 @@ let originalRaf: typeof requestAnimationFrame;
 let originalCaf: typeof cancelAnimationFrame;
 
 beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
     MockResizeObserver.instances = [];
     rafCallbacks = [];
 
@@ -118,6 +161,9 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    unmountTable();
+    container.remove();
+
     (global as any).ResizeObserver = originalResizeObserver;
     global.requestAnimationFrame = originalRaf;
     global.cancelAnimationFrame = originalCaf;
@@ -136,7 +182,7 @@ describe('ResizeObserver — setup and teardown', () => {
     });
 
     test('observes the _box element', () => {
-        const {container} = renderTable();
+        renderTable();
         const observer = MockResizeObserver.instances[0];
         expect(observer.observedTargets).toHaveLength(1);
         // _box is the scrollable wrapper div that carries data-table__box class
@@ -149,10 +195,10 @@ describe('ResizeObserver — setup and teardown', () => {
     });
 
     test('disconnects ResizeObserver on unmount', () => {
-        const {unmount} = renderTable();
+        renderTable();
         const observer = MockResizeObserver.instances[0];
         expect(observer.disconnected).toBe(false);
-        unmount();
+        unmountTable();
         expect(observer.disconnected).toBe(true);
     });
 });
@@ -203,7 +249,7 @@ describe('ResizeObserver — syncHeadWidths debouncing', () => {
             flushRaf(); // execute the rAF → _syncHeadRaf resets to 0
         });
         // flushRaf runs syncHeadWidths → _calculateColumnsWidth, which queues
-        // its own rAF for measuring column widths.  Clear that before the next check.
+        // its own rAF for measuring column widths. Clear that before the next check.
         rafCallbacks = [];
 
         act(() => {
