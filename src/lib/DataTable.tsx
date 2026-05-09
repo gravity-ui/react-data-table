@@ -597,6 +597,8 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
     state: TableState = {};
 
     _onWindowResize?: () => void;
+    _bodyResizeObserver?: ResizeObserver;
+    _syncHeadRaf?: number;
 
     _body?: HTMLDivElement;
     _box?: HTMLDivElement;
@@ -614,6 +616,19 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
             };
             window.addEventListener('resize', this._onWindowResize);
         }
+
+        if (stickyHead && this._box && typeof ResizeObserver !== 'undefined') {
+            this._bodyResizeObserver = new ResizeObserver(() => {
+                if (this._syncHeadRaf) {
+                    return;
+                }
+                this._syncHeadRaf = requestAnimationFrame(() => {
+                    this._syncHeadRaf = 0;
+                    this.syncHeadWidths();
+                });
+            });
+            this._bodyResizeObserver.observe(this._box);
+        }
     }
 
     componentDidUpdate() {
@@ -624,6 +639,14 @@ class Table<T> extends React.PureComponent<TableProps<T>, TableState> {
         if (this._onWindowResize) {
             window.removeEventListener('resize', this._onWindowResize);
             delete this._onWindowResize;
+        }
+        if (this._bodyResizeObserver) {
+            this._bodyResizeObserver.disconnect();
+            delete this._bodyResizeObserver;
+        }
+        if (this._syncHeadRaf) {
+            cancelAnimationFrame(this._syncHeadRaf);
+            this._syncHeadRaf = 0;
         }
     }
 

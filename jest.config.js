@@ -7,8 +7,11 @@ module.exports = {
     preset: 'ts-jest',
     moduleDirectories: ['node_modules', 'src/lib'],
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
-    testMatch: ['**/*.test.js'],
+    testMatch: ['**/*.test.js', '**/*.test.tsx'],
     transform: {
-        'src/test/.+\\.(j|t)sx?$': 'ts-jest',
+        'src/(test|lib)/.+\\.(j|t)sx?$': 'ts-jest',
+    },
+    moduleNameMapper: {
+        '\\.scss$': '<rootDir>/src/test/__mocks__/styleMock.js',
     },
 };
