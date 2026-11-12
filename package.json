@@ -62,7 +62,7 @@
     "@gravity-ui/prettier-config": "^1.0.1",
     "@gravity-ui/stylelint-config": "^2.0.0",
     "@gravity-ui/tsconfig": "^1.0.0",
-    "@gravity-ui/uikit": "^7.0.0 || >=7.0.0-beta.6",
+    "@gravity-ui/uikit": "^8.0.0",
     "@storybook/addon-actions": "^7.3.1",
     "@storybook/addon-essentials": "^7.3.1",
     "@storybook/addon-interactions": "^7.3.1",
@@ -70,8 +70,8 @@
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^7.3.1",
     "@storybook/react-webpack5": "^7.3.1",
-    "@types/react": "16.14.21",
-    "@types/react-dom": "16.9.14",
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
     "@types/react-list": "0.8.7",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "copyfiles": "2.4.1",
@@ -94,7 +94,7 @@
     "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "react": ">=16.14.0"
+    "react": ">=18.0.0"
   },
   "publishConfig": {
     "access": "public"
