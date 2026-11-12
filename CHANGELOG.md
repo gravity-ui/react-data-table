@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.0](https://github.com/gravity-ui/react-data-table/compare/v2.2.1...v3.0.0) (2026-11-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* React 16 and 17 are no longer supported. React 18 or newer is required.
+
+### chore
+
+* migrate to uikit 8 ([3d68f56](https://github.com/gravity-ui/react-data-table/commit/3d68f563b44e3088362a0760bb2b48fc54db7aac))
+
+
+### Bug Fixes
+
+* make lockfile compatible with npm 10 ([024351a](https://github.com/gravity-ui/react-data-table/commit/024351ad9fffa606421cd6b126751824ecb4d638))
+
 ## [2.2.1](https://github.com/gravity-ui/react-data-table/compare/v2.2.0...v2.2.1) (2025-02-14)
 
 
