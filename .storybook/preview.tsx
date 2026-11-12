@@ -1,31 +1,20 @@
-import React from 'react';
-
-import type {Preview, Decorator} from '@storybook/react';
+import {Provider} from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/styles.scss';
-
-import {ThemeProvider, MobileProvider, configure as uikitConfigure} from '@gravity-ui/uikit';
+import type {Decorator, Preview} from '@storybook/react';
+import React from 'react';
 
 export const withContextProvider: Decorator = (StoryItem, context) => {
     return (
         <React.StrictMode>
-            <ThemeProvider theme={context.globals.theme}>
-                <MobileProvider>
-                    <StoryItem {...context} />
-                </MobileProvider>
-            </ThemeProvider>
+            <Provider theme={context.globals.theme} lang={context.globals.lang}>
+                <StoryItem {...context} />
+            </Provider>
         </React.StrictMode>
     );
 };
 
-export const withLang: Decorator = (StoryItem, context) => {
-    const lang = context.globals.lang;
-    uikitConfigure({lang});
-
-    return <StoryItem {...context} />;
-};
-
 const preview: Preview = {
-    decorators: [withContextProvider, withLang],
+    decorators: [withContextProvider],
     parameters: {
         actions: {argTypesRegex: '^on[A-Z].*'},
         controls: {

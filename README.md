@@ -7,6 +7,14 @@ Cell grouping is supported: rows are first sorted by grouped columns. Grouping i
 Multi-column sorting is also supported. Ctrl+Click on a column adds a column at the end
 of the sort list. A simple Click sorts the table by this column only. Sorting order is switched in the sequence: `none -> default -> reversed default -> none`.
 
+## Virtualization and React StrictMode
+
+Virtualization (`settings.dynamicRender: true`) relies on `react-list`, which has a compatibility limitation with React 18+ StrictMode in development. During StrictMode's mount/unmount/remount check, the scroll listener is removed and not restored. Scrolling can then show empty areas in `uniform` and `variable` modes or stop rendering additional rows in `simple` mode.
+
+This StrictMode remount check does not run in production builds.
+
+`@gravity-ui/react-data-table` is in maintenance mode and will not receive new features. We recommend migrating to [@gravity-ui/table](https://github.com/gravity-ui/table).
+
 ## Properties
 
 | Property          | Type       | Required | Default        | Description                                                                                                                                                                                                                                                             |
